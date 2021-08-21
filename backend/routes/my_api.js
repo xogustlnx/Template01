@@ -4,7 +4,7 @@ const Message = require('../models/Message');
 
 router.get('/load', async (req, res, next) => {
     const message = await Message.findOne().sort({ _id: -1 })
-        .then(res => res.message)
+        .then(res => res ? res.message : '')
         .catch(err => {
             console.error(err);
             res.sendStatus(500);
