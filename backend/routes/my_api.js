@@ -1,14 +1,36 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const Message = require('../models/Message');
 
-/* GET home page. */
-router.get('/load', function(req, res, next) {
-    res.json({message: 'Hello world!'});
+router.get('/load', async (req, res, next) => {
+    const message = await Message.findOne().sort({ _id: -1 })
+        .then(res => res.message)
+        .catch(err => {
+            console.error(err);
+            res.sendStatus(500);
+        });
+
+    await res.json({message});
 });
 
-router.post('/save', function(req, res, next) {
-    console.log(req.body.message);
-    res.sendStatus(200)
+/*
+router.get('/reset', async(req, res, next) => {
+    await Message.deleteMany({}, (err, _) => console.log(err));
+    await res.json({ok: true});
+})
+*/
+
+router.post('/save', async (req, res, next) => {
+    const myMessage = new Message({ message: req.body.message });
+    const messageId = await Message.create(myMessage)
+        .then(item => item.id)
+        .catch(err => {
+            console.error(err);
+            res.sendStatus(500);
+        });
+
+    console.log(`New message added: ${messageId}`);
+    await res.sendStatus(200);
 });
 
 module.exports = router;

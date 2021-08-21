@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT | 3008;
 const api = require('./routes/my_api');
+require('./utils/mongo');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
