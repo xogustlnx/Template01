@@ -1,37 +1,31 @@
 version: '3'
 services:
-        nginx:
-                build:
-                        context: .
-                        args:
-                                - 'NGINX_HOST=/* Your domain here */'
-                container_name: nginx
-                restart: 'unless-stopped'
-                ports:
-                        - '80:80'
-                        - '443:443'
-                volumes:
-                        - './nginx/nginx_secrets:/etc/letsencrypt'
-                environment:
-                        - 'CERTBOT_EMAIL=/* Your email here */' 
+        frontend:
+                build: './frontend'
+                container_name: memo_frontend
+
         backend:
                 build: './backend'
-                container_name: backend
+                container_name: memo_backend
                 restart: 'on-failure:5'
                 depends_on:
                         - mongodb
                 expose:
                         - '3000'
+                networks:
+                        - net
                 environment:
                         - 'PORT=3000'
                         - 'MONGO_URI=mongodb://root:Super-Hard-Password-Vp2NoUNduzLt982f@mongodb/template01?authSource=admin'
 
         mongodb:
                 image: mongo
-                container_name: mongo
+                container_name: memo_mongo
                 restart: 'unless-stopped'
                 volumes: 
                         - 'mongodb:/data/db'
+                networks:
+                        - net
                 environment:
                         - 'MONGO_INITDB_ROOT_USERNAME=root'
                         - 'MONGO_INITDB_ROOT_PASSWORD=Super-Hard-Password-Vp2NoUNduzLt982f'
@@ -39,3 +33,7 @@ services:
         
 volumes:
         mongodb:
+
+networks:
+        net:
+                driver: bridge
