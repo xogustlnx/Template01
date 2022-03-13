@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = 22;
+const port = 8080;
 const api = require('./routes/my_api');
 require('./utils/mongo');
 
