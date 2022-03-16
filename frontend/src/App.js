@@ -6,7 +6,7 @@ function App() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-      axios.get('http://ssal.sparcs.org:57785/api/load')
+      axios.get('/api/load')
           .then(res => {
               if(res.status === 200) setMessage(res.data.message);
           })
@@ -16,7 +16,7 @@ function App() {
   const handleChange = useCallback(e => setMessage(e.target.value), []);
   const handleSubmit = useCallback(e => {
       e.preventDefault();
-      axios.post('http://ssal.sparcs.org:57785/api/save', { message })
+      axios.post('/api/save', { message })
           .then(res => {
               if(res.status === 200) alert("Successfully saved.");
           })
